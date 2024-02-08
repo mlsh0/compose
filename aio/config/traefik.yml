@@ -1,0 +1,52 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+api:
+  dashboard: true
+  debug: false
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+  postgres:
+    address: ":5432"
+
+serversTransport:
+  insecureSkipVerify: true
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: proxy
+    watch: true
+  file:
+    filename: "dynamic.yml"
+    watch: true
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: "example@example.com"
+      storage: "/acme.json"
+      keyType: RSA4096
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
+
+log:
+  level: "INFO"
+  filePath: "/var/logs/traefik/traefik.log"
+accessLog:
+  filePath: "/var/logs/traefik/access.log"
+  bufferingSize: 100

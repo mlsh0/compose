@@ -1,0 +1,36 @@
+tls:
+  options:
+    default:
+      minVersion: VersionTLS13
+      sniStrict: true
+
+http:
+  middlewares:
+    traefik-auth:
+      basicAuth:
+        users:
+          - ""
+    default:
+      chain:
+        middlewares:
+          - default-security-headers
+          - gbrotli
+
+    default-security-headers:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        frameDeny: true
+        #HSTS Configuration
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15778463
+        customFrameOptionsValue: "SAMEORIGIN"
+    gbrotli:
+      compress:
+        {}
+        # includedContentTypes: # Uncomment when v3.0 is released
+        #   - application/json
+        #   - text/html
+        #   - text/plain
