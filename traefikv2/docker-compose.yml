@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  ###### REVERSE PROXY ######
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    networks:
+      - proxy
+    ports:
+      - 80:80/tcp # WEB
+      - 443:443/tcp # WEBSECURE
+    volumes:
+      - ./config/traefik/traefik.yml:/traefik.yml:ro
+      - ./config/traefik/dynamic.yml:/dynamic.yml:ro
+      - /docker/logs/traefik/access.log:/var/logs/traefik/access.log
+      - /docker/logs/traefik/traefik.log:/var/logs/traefik/traefik.log
+      - ./acme.json:/acme.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - CF_DNS_API_TOKEN=${CF_TOKEN}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.domains[0].main=${DOMAIN}"
+      - "traefik.http.routers.traefik.tls.domains[0].sans=*.${DOMAIN}"
+      - "traefik.http.routers.traefik.middlewares=traefik-auth@file,default@file"
+      - "traefik.http.services.traefik.loadbalancer.sticky.cookie.httpOnly=true"
+      - "traefik.http.services.traefik.loadbalancer.sticky.cookie.secure=true"
+    restart: always
+
+networks:
+  proxy:
+    external: true

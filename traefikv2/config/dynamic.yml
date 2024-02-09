@@ -6,7 +6,7 @@ tls:
 
 http:
   middlewares:
-    traefik-auth:
+    auth:
       basicAuth:
         users:
           - ""

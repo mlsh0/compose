@@ -16,8 +16,6 @@ entryPoints:
           scheme: https
   websecure:
     address: ":443"
-  postgres:
-    address: ":5432"
 
 serversTransport:
   insecureSkipVerify: true
