@@ -10,8 +10,8 @@ services:
       - 80:80/tcp # WEB
       - 443:443/tcp # WEBSECURE
     volumes:
-      - ./config/traefik/traefik.yml:/traefik.yml:ro
-      - ./config/traefik/dynamic.yml:/dynamic.yml:ro
+      - ./config/traefik.yml:/traefik.yml:ro
+      - ./config/dynamic.yml:/dynamic.yml:ro
       - /docker/logs/traefik/access.log:/var/logs/traefik/access.log
       - /docker/logs/traefik/traefik.log:/var/logs/traefik/traefik.log
       - ./acme.json:/acme.json
