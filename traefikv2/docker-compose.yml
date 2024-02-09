@@ -30,7 +30,7 @@ services:
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.tls.domains[0].main=${DOMAIN}"
       - "traefik.http.routers.traefik.tls.domains[0].sans=*.${DOMAIN}"
-      - "traefik.http.routers.traefik.middlewares=traefik-auth@file,default@file"
+      - "traefik.http.routers.traefik.middlewares=auth@file,default@file"
       - "traefik.http.services.traefik.loadbalancer.sticky.cookie.httpOnly=true"
       - "traefik.http.services.traefik.loadbalancer.sticky.cookie.secure=true"
     restart: always
