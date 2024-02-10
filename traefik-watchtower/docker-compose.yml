@@ -34,7 +34,22 @@ services:
       - "traefik.http.services.traefik.loadbalancer.sticky.cookie.httpOnly=true"
       - "traefik.http.services.traefik.loadbalancer.sticky.cookie.secure=true"
     restart: always
-
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=false"
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_REVIVE_STOPPED=false
+      - WATCHTOWER_POLL_INTERVAL=172800
 networks:
   proxy:
     external: true
