@@ -15,11 +15,32 @@ services:
       - "traefik.http.routers.rss.entrypoints=websecure"
       - "traefik.http.routers.rss.service=rss"
       - "traefik.http.routers.rss.tls=true"
-      - "traefik.http.routers.rss.middlewares=auth@file,default@file"
+      - "traefik.http.routers.rss.middlewares=default@file"
       - "traefik.http.services.rss.loadbalancer.server.port=80"
     restart: unless-stopped
     networks:
       - proxy
+  freshrss-db:
+    image: postgres:16-alpine
+    container_name: freshrss-db
+    hostname: freshrss-db
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: 10m
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_BASE:-freshrss}
+      POSTGRES_USER: ${DB_USER:-freshrss}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-freshrss}
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=false"
+
+volumes:
+  db:
 
 networks:
   proxy:
